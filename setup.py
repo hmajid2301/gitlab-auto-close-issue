@@ -17,7 +17,7 @@ setup(
     packages=find_packages(where="src"),
     zip_safe=False,
     include_package_data=True,
-    install_requires=["click>=7.0"],
+    install_requires=["click>=7.0", "python-gitlab>=1.8.0"],
     entry_points={"console_scripts": ["gitlab_auto_close_issue = gitlab_auto_close_issue.cli:cli"]},
     classifiers=[
         "Programming Language :: Python",
