@@ -23,7 +23,7 @@ Usage
 -----
 
 First you need to create a personal access token, `more information here
-<https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html>`_. With the scope ``api``, so it can create the release for you.
+<https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html>`_. With the scope ``api``, so it can close the issue for you.
 
 .. code-block:: bash
 
@@ -36,10 +36,10 @@ First you need to create a personal access token, `more information here
 
   Options:
     --private-token TEXT     Private GITLAB token, used to authenticate when
-                            calling the MR API.  [required]
-    --project-id INTEGER     The project ID on GitLab to create the MR for.
+                            calling the auto issue close API.  [required]
+    --project-id INTEGER     The project ID on GitLab to create the auto close API for.
                             [required]
-    --project-url TEXT       The project URL on GitLab to create the MR for.
+    --project-url TEXT       The project URL on GitLab to create the auto close API for.
                             [required]
     -i, --issue TEXT         The Issue ID to close.  [required]
     -r, --remove-label TEXT  The labels to remove from (all) the issue(s) before
@@ -65,11 +65,9 @@ Add the following to your ``.gitlab-ci.yml`` file:
   stages:
     - post
 
-  publish:release:
+  close:issue:
     image: registry.gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue
     stage: post
-    only:
-      - /^release/.*$/
     before_script: []
     script:
       - gitlab_auto_close_issue --issue 1 --remove-label "Doing" --remove-label "To Do"

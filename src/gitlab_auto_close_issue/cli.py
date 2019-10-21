@@ -26,19 +26,19 @@ import gitlab
     "--private-token",
     envvar="GITLAB_PRIVATE_TOKEN",
     required=True,
-    help="Private GITLAB token, used to authenticate when calling the MR API.",
+    help="Private GITLAB token, used to authenticate when calling the auto close API.",
 )
 @click.option(
     "--project-id",
     envvar="CI_PROJECT_ID",
     required=True,
     type=int,
-    help="The project ID on GitLab to create the MR for.",
+    help="The project ID on GitLab to create the auto close for.",
 )
 @click.option(
-    "--project-url", envvar="CI_PROJECT_URL", required=True, help="The project URL on GitLab to create the MR for."
+    "--project-url", envvar="CI_PROJECT_URL", required=True, help="The project URL on GitLab to create the auto close API for."
 )
-@click.option("--issue", "-i", multiple=True, required=True, help="The Issue ID to close.")
+@click.option("--issue", "-i", multiple=True, required=True, help="The ID of the issue to close.")
 @click.option(
     "--remove-label", "-r", multiple=True, help="The labels to remove from (all) the issue(s) before closing it."
 )
