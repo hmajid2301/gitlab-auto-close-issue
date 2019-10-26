@@ -1,6 +1,6 @@
-image: python:3.7
+image: python:3.6
+
 variables:
-  IMAGE: "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
   DOCKER_DRIVER: overlay2
 
 services:
@@ -58,7 +58,6 @@ publish-docker:
   script:
     - export VERSION_TAG=$(cat setup.py | grep version | head -1 | awk -F= '{ print $2 }' | sed 's/[",]//g' | tr -d "'")
     - docker login ${CI_REGISTRY} -u gitlab-ci-token -p ${CI_BUILD_TOKEN}
-    - docker build -t ${IMAGE}:latest  .
-    - docker build -t ${IMAGE}:${VERSION_TAG}  .
-    - docker push ${IMAGE}:latest
-    - docker push ${IMAGE}:${VERSION_TAG}
+    - docker build -t ${CI_REGISTRY_IMAGE}:latest  -t ${CI_REGISTRY_IMAGE}:${VERSION_TAG}  .
+    - docker push ${CI_REGISTRY_IMAGE}:latest
+    - docker push ${CI_REGISTRY_IMAGE}:${VERSION_TAG}

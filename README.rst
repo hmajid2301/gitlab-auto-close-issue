@@ -17,7 +17,8 @@
 gitlab-auto-close-issue
 =======================
 
-Python script which will automatically close issues on GitLab for you.
+This is a simple Python cli script that allows you close issues on GitLab automatically. It is intended to be
+used during your CI/CD. However you can chose to use it however you wish.
 
 Usage
 -----
@@ -39,7 +40,7 @@ First you need to create a personal access token, `more information here
                             calling the auto issue close API.  [required]
     --project-id INTEGER     The project ID on GitLab to create the auto close API for.
                             [required]
-    --project-url TEXT       The project URL on GitLab to create the auto close API for.
+    --gitlab-url TEXT       The GitLab URL.
                             [required]
     -i, --issue TEXT         The Issue ID to close.  [required]
     -r, --remove-label TEXT  The labels to remove from (all) the issue(s) before
@@ -57,6 +58,10 @@ GitLab CI
 Set a secret variable in your GitLab project with your private token. Name it ``GITLAB_PRIVATE_TOKEN`` (``CI/CD > Environment Variables``).
 This is necessary to close the issue on your behalf.
 More information `click here <https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html>`_.
+This access token is passed to the script with the ``--private-token`` argument.
+An example CI using this can be found
+`here <https://gitlab.com/hmajid2301/stegappasaurus/blob/a22b7dc80f86b471d8a2eaa7b7eadb7b492c53c7/.gitlab-ci.yml>`_,
+look for the ``close:issue`` job.
 
 Add the following to your ``.gitlab-ci.yml`` file:
 
@@ -71,6 +76,31 @@ Add the following to your ``.gitlab-ci.yml`` file:
     before_script: []
     script:
       - gitlab_auto_close_issue --issue 1 --remove-label "Doing" --remove-label "To Do"
+
+Predefined Variables
+^^^^^^^^^^^^^^^^^^^^
+
+Please note some of the arguments can be filled in using environment variables defined during GitLab CI.
+For more information `click here <https://docs.gitlab.com/ee/ci/variables/predefined_variables.html>_`.
+
+* If ``--private-token`` is not set the script will look for the ENV variable ``GITLAB_PRIVATE_TOKEN``
+* If ``--source-branch`` is not set the script will look for the ENV variable ``CI_COMMIT_REF_NAME``
+* If ``--project-id`` is not set it will look for for the ENV variable ``CI_PROJECT_ID``
+* If ``--gitlab-url`` is not set it will look for for the ENV variable ``CI_PROJECT_URL``
+* If ``--user-id`` is not set it will look for for the ENV variable ``GITLAB_USER_ID``
+
+
+Setup Development Environment
+==============================
+
+.. code-block:: bash
+
+  git clone git@gitlab.com:gitlab-automation-toolkit/gitlab-auto-close-issue.git
+  cd gitlab-auto-close-issue
+  pip install tox
+  make virtualenv
+  make install-dev
+
 
 Changelog
 =========

@@ -14,6 +14,7 @@ Example:
 
 """
 
+import os
 import re
 import sys
 
@@ -35,16 +36,16 @@ import gitlab
     type=int,
     help="The project ID on GitLab to create the auto close for.",
 )
-@click.option(
-    "--project-url", envvar="CI_PROJECT_URL", required=True, help="The project URL on GitLab to create the auto close API for."
-)
+@click.option("--gitlab-url", envvar="CI_PROJECT_URL", required=True, help="The GitLab URL.")
 @click.option("--issue", "-i", multiple=True, required=True, help="The ID of the issue to close.")
 @click.option(
     "--remove-label", "-r", multiple=True, help="The labels to remove from (all) the issue(s) before closing it."
 )
-def cli(private_token, project_id, project_url, issue, remove_label):
+def cli(private_token, project_id, gitlab_url, issue, remove_label):
     """Gitlab Auto Close Issue"""
-    gitlab_url = re.search("^https?://[^/]+", project_url).group(0)
+    if gitlab_url == os.environ["CI_PROJECT_URL"]:
+        gitlab_url = re.search("^https?://[^/]+", gitlab_url).group(0)
+
     gl = gitlab.Gitlab(gitlab_url, private_token=private_token)
     try:
         project = gl.projects.get(project_id)
@@ -62,4 +63,4 @@ def cli(private_token, project_id, project_url, issue, remove_label):
             issue.save()
             print(f"Issue with id {issue_id} has been closed.")
         except gitlab.exceptions.GitlabGetError:
-            print(f"The issue with id {issue_id} doesn't exist on project {project_url}.")
+            print(f"The issue with id {issue_id} doesn't exist.")
