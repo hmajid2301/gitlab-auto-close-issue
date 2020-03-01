@@ -20,6 +20,7 @@ import sys
 
 import click
 import gitlab
+import requests
 
 
 @click.command()
@@ -55,8 +56,23 @@ def cli(private_token, project_id, gitlab_url, issue, remove_label):
     except gitlab.exceptions.GitlabGetError:
         print(f"Unable to get project {project_id}.")
         sys.exit(1)
+    except requests.exceptions.MissingSchema:
+        print(f"Incorrect --gitlab-url, missing schema i.e. https:// {gitlab_url}.")
+        sys.exit(1)
 
-    for issue_id in issue:
+    update_issues(issue, project, remove_label)
+
+
+def update_issues(issues, project, remove_label):
+    """Checks if the release already exsists for that project.
+
+    Args:
+        issues (tuple): List of issue ids to close.
+        project (Gitlab.project): Gitlab project object, to make API requests.
+        remove_label (tuple): List of labels to remove from issue before closing it.
+
+    """
+    for issue_id in issues:
         try:
             issue = project.issues.get(issue_id)
         except gitlab.exceptions.GitlabGetError:

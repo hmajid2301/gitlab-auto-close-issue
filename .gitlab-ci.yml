@@ -38,13 +38,21 @@ test:coverage:
     - make coverage
   coverage: '/^TOTAL.+?(\S+\%)$/'
 
-test:check-manifest:
-  stage: test
+publish-docker:
+  stage: pre-publish
+  image: docker
   only:
     - /^release/.*$/
+  before_script:
+    - apk add python3-dev
+    - python3 setup.py sdist
   script:
-    - pip install tox
-    - make check-manifes
+    - export VERSION_TAG=$(cat setup.py | grep version | head -1 | awk -F= '{ print $2 }' | sed 's/[",]//g' | tr -d "'")
+    - docker login ${CI_REGISTRY} -u gitlab-ci-token -p ${CI_BUILD_TOKEN}
+      - docker pull ${CI_REGISTRY_IMAGE}:${VERSION_TAG} && echo "Tag ${VERSION_TAG} already exists" && exit 1 || true
+    - docker build -t ${CI_REGISTRY_IMAGE}:latest -t ${CI_REGISTRY_IMAGE}:${VERSION_TAG}  .
+    - docker push ${CI_REGISTRY_IMAGE}:latest
+    - docker push ${CI_REGISTRY_IMAGE}:${VERSION_TAG}
 
 publish_package:staging:
   stage: pre-publish
@@ -69,19 +77,3 @@ publish-package:production:
     - pip install tox
     - make pypi-check
     - make pypi-upload
-
-publish-docker:
-  stage: publish
-  image: docker
-  only:
-    - master
-  before_script:
-    - apk add python3-dev
-    - python3 setup.py sdist
-  script:
-    - export VERSION_TAG=$(cat setup.py | grep version | head -1 | awk -F= '{ print $2 }' | sed 's/[",]//g' | tr -d "'")
-    - docker login ${CI_REGISTRY} -u gitlab-ci-token -p ${CI_BUILD_TOKEN}
-    - docker pull ${CI_REGISTRY_IMAGE}:${VERSION_TAG} > /dev/null && echo "Tag ${VERSION_TAG} already exists"; exit 1 || true
-    - docker build -t ${CI_REGISTRY_IMAGE}:latest  -t ${CI_REGISTRY_IMAGE}:${VERSION_TAG}  .
-    - docker push ${CI_REGISTRY_IMAGE}:latest
-    - docker push ${CI_REGISTRY_IMAGE}:${VERSION_TAG}

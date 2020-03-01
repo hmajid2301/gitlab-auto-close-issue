@@ -57,37 +57,43 @@ def test_fail_args(runner, args, exit_code):
     assert result.exit_code == exit_code
 
 
-def test_fail_invalid_project(mocker, runner):
-    args = [
-        "--private-token",
-        "ATOKEN1234",
-        "--project-id",
-        213145,
-        "--gitlab-url",
-        "https://gitlab.com/hmajid2301/gitlab-auto-mr",
-        "--issue",
-        "83",
-        "--remove-label",
-        "Doing",
-    ]
-    mocker.patch("gitlab.v4.objects.ProjectManager.get", side_effect=gitlab.exceptions.GitlabGetError)
-    result = runner.invoke(cli, args)
-    assert result.exit_code == 1
-
-
-def test_fail_invalid_private_token(runner):
-    args = [
-        "--private-token",
-        "ATOKEN1234",
-        "--project-id",
-        213145,
-        "--gitlab-url",
-        "https://gitlab.com",
-        "--issue",
-        "83",
-        "--remove-label",
-        "Doing",
-    ]
+@pytest.mark.parametrize(
+    "args, exception",
+    [
+        (
+            [
+                "--private-token",
+                "ATOKEN1234",
+                "--project-id",
+                213145,
+                "--gitlab-url",
+                "https://gitlab.com/hmajid2301/gitlab-auto-mr",
+                "--issue",
+                "83",
+                "--remove-label",
+                "Doing",
+            ],
+            gitlab.exceptions.GitlabGetError,
+        ),
+        (
+            [
+                "--private-token",
+                "ATOKEN1234",
+                "--project-id",
+                213145,
+                "--gitlab-url",
+                "https://gitlab.com",
+                "--issue",
+                "83",
+                "--remove-label",
+                "Doing",
+            ],
+            gitlab.exceptions.GitlabAuthenticationError,
+        ),
+    ],
+)
+def test_fail_invalid_project(mocker, runner, args, exception):
+    mocker.patch("gitlab.v4.objects.ProjectManager.get", side_effect=exception)
     result = runner.invoke(cli, args)
     assert result.exit_code == 1
 

@@ -14,10 +14,6 @@
    :target: https://pypi.org/project/gitlab-auto-close-issue/
    :alt: PyPI Project Version
 
-.. image:: https://readthedocs.org/projects/gitlab-auto-close-issue/badge/?version=latest
-   :target: https://gitlab-auto-close-issue.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
-
 gitlab-auto-close-issue
 =======================
 
@@ -101,6 +97,7 @@ Setup Development Environment
   cd gitlab-auto-close-issue
   pip install tox
   make install-venv
+  source .venv/bin/activate
   make install-dev
 
 
