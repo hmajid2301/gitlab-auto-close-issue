@@ -12,7 +12,7 @@ setup(
     keywords="",
     license="Apache License",
     url="https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue",
-    python_requires="~=3.7",
+    python_requires="~=3.6",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     zip_safe=False,

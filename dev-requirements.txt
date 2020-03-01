@@ -1,0 +1,6 @@
+black==19.3b0
+click==7.0
+flake8==3.7.7
+pytest==5.3.5
+pytest-mock==2.0.0
+tox==3.9.0

@@ -23,6 +23,29 @@ test:code-formatter:
     - pip install tox
     - make code-formatter-check
 
+test:unit-tests:
+  stage: test
+  script:
+    - pip install tox
+    - make tests
+
+test:coverage:
+  stage: test
+  only:
+    - master
+  script:
+    - pip install tox
+    - make coverage
+  coverage: '/^TOTAL.+?(\S+\%)$/'
+
+test:check-manifest:
+  stage: test
+  only:
+    - /^release/.*$/
+  script:
+    - pip install tox
+    - make check-manifes
+
 publish_package:staging:
   stage: pre-publish
   only:

@@ -2,6 +2,10 @@
    :target: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue
    :alt: Pipeline Status
 
+.. image:: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue/badges/master/coverage.svg
+   :target: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue
+   :alt: Coverage
+
 .. image:: https://img.shields.io/pypi/l/gitlab-auto-close-issue.svg
    :target: https://pypi.org/project/gitlab-auto-close-issue/
    :alt: PyPI Project License
