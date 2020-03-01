@@ -43,24 +43,29 @@ import gitlab
 )
 def cli(private_token, project_id, gitlab_url, issue, remove_label):
     """Gitlab Auto Close Issue"""
-    if gitlab_url == os.environ["CI_PROJECT_URL"]:
+    if "CI_PROJECT_URL" in os.environ and gitlab_url == os.environ["CI_PROJECT_URL"]:
         gitlab_url = re.search("^https?://[^/]+", gitlab_url).group(0)
 
     gl = gitlab.Gitlab(gitlab_url, private_token=private_token)
     try:
         project = gl.projects.get(project_id)
-    except gitlab.exceptions.GitlabGetError as e:
-        print(f"Unable to get project {project_id}. Error: {e}.")
+    except gitlab.exceptions.GitlabAuthenticationError:
+        print(f"Unable to get project {project_id}. Unauthorised access, check your access token is valid.")
+        sys.exit(1)
+    except gitlab.exceptions.GitlabGetError:
+        print(f"Unable to get project {project_id}.")
         sys.exit(1)
 
     for issue_id in issue:
         try:
             issue = project.issues.get(issue_id)
-            issue.labels = list(set(issue.labels) - set(remove_label))
-            issue.state_event = "close"
-            issue.assignee_ids = 0
-            issue.due_date = None
-            issue.save()
-            print(f"Issue with id {issue_id} has been closed.")
         except gitlab.exceptions.GitlabGetError:
             print(f"The issue with id {issue_id} doesn't exist.")
+            continue
+
+        issue.labels = list(set(issue.labels) - set(remove_label))
+        issue.state_event = "close"
+        issue.assignee_ids = 0
+        issue.due_date = None
+        issue.save()
+        print(f"Issue with id {issue_id} has been closed.")

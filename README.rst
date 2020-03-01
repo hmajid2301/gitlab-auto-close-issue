@@ -2,6 +2,10 @@
    :target: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue
    :alt: Pipeline Status
 
+.. image:: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue/badges/master/coverage.svg
+   :target: https://gitlab.com/gitlab-automation-toolkit/gitlab-auto-close-issue
+   :alt: Coverage
+
 .. image:: https://img.shields.io/pypi/l/gitlab-auto-close-issue.svg
    :target: https://pypi.org/project/gitlab-auto-close-issue/
    :alt: PyPI Project License
@@ -84,10 +88,8 @@ Please note some of the arguments can be filled in using environment variables d
 For more information `click here <https://docs.gitlab.com/ee/ci/variables/predefined_variables.html>_`.
 
 * If ``--private-token`` is not set the script will look for the ENV variable ``GITLAB_PRIVATE_TOKEN``
-* If ``--source-branch`` is not set the script will look for the ENV variable ``CI_COMMIT_REF_NAME``
 * If ``--project-id`` is not set it will look for for the ENV variable ``CI_PROJECT_ID``
 * If ``--gitlab-url`` is not set it will look for for the ENV variable ``CI_PROJECT_URL``
-* If ``--user-id`` is not set it will look for for the ENV variable ``GITLAB_USER_ID``
 
 
 Setup Development Environment
@@ -98,7 +100,7 @@ Setup Development Environment
   git clone git@gitlab.com:gitlab-automation-toolkit/gitlab-auto-close-issue.git
   cd gitlab-auto-close-issue
   pip install tox
-  make virtualenv
+  make install-venv
   make install-dev
 
 
