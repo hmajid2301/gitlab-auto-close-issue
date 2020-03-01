@@ -102,7 +102,7 @@ Setup Development Environment
   git clone git@gitlab.com:gitlab-automation-toolkit/gitlab-auto-close-issue.git
   cd gitlab-auto-close-issue
   pip install tox
-  make virtualenv
+  make install-venv
   make install-dev
 
 
