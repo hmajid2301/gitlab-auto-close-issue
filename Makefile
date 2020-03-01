@@ -1,8 +1,8 @@
 PY=py37
 
 # prompt_example> make test PY=py35 OPTIONS="-- -s"
-.PHONY: test
-test:
+.PHONY: tests
+tests:
 	@tox -e $(PY) $(OPTIONS)
 
 .PHONY: coverage
